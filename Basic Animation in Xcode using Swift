@@ -1,0 +1,38 @@
+// animation without gravity  Xcode Project
+//  ViewController.swift
+//  Dyanamic Testing
+//
+//  Created by Xerox on 26/01/16.
+//  Copyright © 2016 Apple. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController {
+// create two shapes
+    var greenSquare: UIView?
+    var redSquare: UIView?
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+     
+        //create the shape
+        var dimen = CGRectMake(25, 25, 60, 60)
+        greenSquare = UIView(frame: dimen)
+        greenSquare?.backgroundColor = UIColor.greenColor()
+        
+        
+        dimen = CGRectMake(130, 25, 90, 90)
+        redSquare = UIView(frame: dimen)
+        redSquare?.backgroundColor = UIColor.redColor()
+        
+        //add them to the screen
+        self.view.addSubview(greenSquare!)
+        self.view.addSubview(redSquare!)
+    }
+
+   
+
+
+}
