@@ -1,0 +1,27 @@
+// core graphics tutorial ios
+//  Draw Examples.swift
+//  Draw Example
+//
+//  Created by Xerox on 25/01/16.
+//  Copyright © 2016 Apple. All rights reserved.
+//
+
+import UIKit
+
+class Draw_Examples: UIView {
+   //in this drawrect func we can darw anything it dos'nt mean only rectangle it can draw anything we canput image etc
+    override func drawRect(rect: CGRect) {
+        //context is object used for drawing
+        let context=UIGraphicsGetCurrentContext()
+        CGContextSetLineWidth(context, 3.0)//its paint brush thickness we can set anything
+        CGContextSetStrokeColorWithColor(context, UIColor.redColor().CGColor)//it will make colour which colour we want
+        //NOw we create a path
+       CGContextMoveToPoint(context, 50, 60)//we give the condinates to the our brush
+        CGContextAddLineToPoint(context, 250, 320)//this will make a line from the cordinates
+       //this is we create a path to our brush
+        
+        //actually draw the path
+        CGContextStrokePath(context)
+        //this will draw a line
+    }
+}
