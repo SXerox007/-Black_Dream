@@ -1,0 +1,517 @@
+//Media Player
+#include <iostream>
+using namespace std;
+//structure of songs
+struct songs
+{
+    string song_name;
+    songs *prev,*next;
+};
+
+//structure of Play list
+struct Playlist
+{
+    string Playlist_id;
+    Playlist *next;
+    Playlist *prev;
+    songs *Head_song=NULL;
+}*start=NULL;
+
+struct undo
+{
+    string a;
+    int n;
+    Playlist *play_list;
+    songs *song=NULL;
+    undo *next;
+}*head=NULL;
+
+//Push Functionality
+
+//Undo functionality Perform in Push function
+void Push(string a,Playlist *p,int n,songs *s)
+{
+undo *temp,*r;
+if(n==1)
+{
+r=head;
+temp=new undo;
+temp->a=a;
+temp->play_list=p;
+temp->song=s;
+temp->next=NULL;
+temp->n=n;
+if(r==NULL)
+head=temp;
+else
+{
+    temp->next=head;
+    head=temp;
+}
+}
+else
+{
+    r=new undo;
+    r->a=a;
+    r->play_list=p;
+    r->song=s;
+    r->n=n;
+    r->next=head;
+    head=r;
+}
+
+}
+
+//Add songs
+songs *Add_songs()
+{
+    string a;
+    songs *head=NULL,*temp,*r;
+    while(1)
+    {
+        cout<<"Enter the name of song which you want to add this Playlist and Enter 'No' to exit \n";
+        cin>>a;
+        if(a=="No")
+            break;
+        temp=new songs;
+        temp->song_name=a;
+        if(head==NULL)
+        {
+            temp->next=temp;
+            temp->prev=NULL;
+            head=temp;
+           Push(a, NULL, 2, temp);
+            
+        }
+        else
+        {
+            r=head;
+            while(r->next!=head)
+                r=r->next;
+
+            temp->next=head;
+            temp->prev=r;
+            r->next=temp;
+            temp->next->prev=temp;
+            Push(a, NULL, 2, temp);
+        }
+    }
+    return head;
+}
+
+//create play list
+void create_Play_list()
+{
+    int flag=0;
+    string id;
+    char a;
+    Playlist *add_Playlist,*temp;
+    cout<<"Enter Name_of_Playlist \n";
+    cin>>id;
+    add_Playlist=new Playlist;
+    add_Playlist->Playlist_id=id;
+    if(start==NULL)
+    {
+        
+        add_Playlist->next=NULL;
+        add_Playlist->prev=NULL;
+        start=add_Playlist;
+        Push(id,add_Playlist,1,NULL);
+    }
+    else
+    {
+        temp=start;
+        while(temp->next!=NULL)
+        {
+            if(temp->Playlist_id==id)
+            {
+                flag=1;
+                break;
+            }
+            temp=temp->next;
+        }
+        if(flag==1)
+        {
+            cout<<"Already in the Linked list"<<endl;
+            return;
+        }
+        add_Playlist->next=NULL;
+        add_Playlist->prev=temp;
+        add_Playlist->Head_song=NULL;
+        temp->next=add_Playlist;
+        Push(id,add_Playlist,1,NULL);
+    }
+    cout<<"Do you want to add songs in this play_list Y/N"<<endl;
+    cin>>a;
+    if(a=='y' || a=='Y')
+        add_Playlist->Head_song=Add_songs();
+    
+}
+
+//display for checking Purpose
+void display()
+{
+    Playlist *temp=start;
+    while(temp!=NULL)
+    {
+        cout<<temp->Playlist_id<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+    
+}
+
+// display menu about songs
+void display_menu2()
+{
+    cout<<"1.Add songs\n"<<"2.Play Play_list\n"<<"3.Reverse \n"<<"4.shuffle songs \n"<<"5.play Mode \n"<<"6.Delete song\n"<<"7.Display songs";
+}
+
+//Add songs by selected linked list
+void Add_songs(int n)
+{
+    string a;
+    Playlist *temp=start;
+    songs *r,*temp1;
+    while(--n)
+    {
+        temp=temp->next;
+    }
+    while(1)
+    {
+        cout<<"Enter the name of the song and 'No' to exit \n";
+        cin>>a;
+        
+        if(a=="No")
+            break;
+        
+        r=new songs;
+        r->song_name=a;
+        if(temp->Head_song==NULL)
+        {
+            r->next=r;
+            r->prev=r;
+            temp->Head_song=r;
+            //cout<<r<<" "<<temp->Head_song;
+            Push(a, NULL, 2, r);
+        }
+        else
+        {
+            temp1=temp->Head_song;
+            
+            while(temp1->next!=temp->Head_song)
+                temp1=temp1->next;
+            r->next=temp->Head_song;
+            //r->next=NULL;
+            r->prev=r;
+            temp1->next=r;
+            temp->Head_song->prev=r;
+            Push(a, NULL, 2, r);
+        }
+        
+    }
+}
+//Display songs
+void display_songs(int n)
+{
+    int i=1;
+    Playlist *temp=start;
+    songs *yo;
+    while (--n)
+        temp=temp->next;
+    yo=temp->Head_song;
+    if(temp->Head_song==NULL)
+    {
+        cout<<"Play_list is Empty \n";
+        return;
+    }
+    while(1)
+    {
+        if(yo->next==temp->Head_song)
+        {
+            cout<<yo->song_name<<endl;
+            break;
+        }
+        cout<<i<<"."<<yo->song_name<<endl;
+        yo=yo->next;
+        ++i;
+    }
+    
+}
+
+//Reverse the songs in  Play_list
+void Reverse_Songs_Play_list(int n)
+{
+    string x;
+    Playlist *temp=start;
+    songs *r,*p;
+    if(n!=1)
+    {
+        while(n--)
+            temp=temp->next;
+    }
+    p=r=temp->Head_song;
+    if(temp->Head_song==NULL)
+    {
+        cout<<"Empty List \n";
+        return;
+    }
+    else
+    {
+        while(p->next!=temp->Head_song)
+            p=p->next;
+        // cout<<p->song_name<<r->song_name;
+        while(p!=r)
+        {
+            x=r->song_name;
+            r->song_name=p->song_name;
+            p->song_name=x;
+            
+            r=r->next;
+            p=p->prev;
+        }
+        Push(NULL, temp, 3, NULL);
+/*
+    string x;
+    Playlist *temp=start;
+    songs *temp1=NULL,*p,*head;
+    if(n!=1)
+    {
+    while(n--)
+    temp=temp->next;
+    }
+    if(temp->Head_song==NULL)
+    {
+    cout<<"Empty List \n";
+    return;
+    }
+    else
+    {
+       
+head=temp->Head_song;
+        while(head!=NULL)
+        {
+            p=head->next;
+            head->next=temp1;
+            temp1=head;
+            head=p;
+        }
+        temp->Head_song=temp1;
+        Push(NULL, temp, 3, NULL);
+        */
+        
+    }
+}
+
+//delete song
+void delete_soong(int n)
+{
+    int m=n;
+    int i=1,x;
+    Playlist *temp=start;
+    songs *r;
+    while(--n)
+        temp=temp->next;
+    
+    r=temp->Head_song;
+    
+    display_songs(m);
+    cout<<"select the song which you want to delete \n";
+    cin>>x;
+    
+    while(1)
+    {
+        if(x==i)
+        {
+            r->prev->next=r->next;
+            break;
+        }
+        r=r->next;
+        ++i;
+    }
+    Push(NULL, NULL, 4, r);
+    delete temp;
+}
+//shuffle songs
+void shuffle_songs(int n)
+{
+    int a=1;
+    string temp_s;
+    songs *r;
+    Playlist *temp=start;
+    if(n!=1)
+    {
+    while(--n)
+    temp=temp->next;
+    }
+    r=temp->Head_song;
+    while(r->next!=temp->Head_song)
+    {
+        temp_s=r->song_name;
+        if(a%2==0)
+        {
+        r->song_name=r->next->next->song_name;
+        r->next->next->song_name=temp_s;
+            ++a;
+        }
+        else
+        {
+            r->song_name=r->next->song_name;
+            r->next->song_name=temp_s;
+            ++a;
+        }
+            r=r->next;
+    }
+    
+}
+// songs Play Mode Menu
+void PlayMode_Menu()
+{
+ cout<<"1.Shuffle the songs\n"<<"2.Reverse the Songs\n"<<"3.Repete this song only\n"<<"4.Play simple\n";
+}
+//Play Mode
+void Play_Mode(int n)
+{
+    int m;
+    PlayMode_Menu();
+    cout<<"Enter the Fuction no. which you want to perform \n";
+    cin>>m;
+    switch(m)
+    {
+        case 1:
+            shuffle_songs(n);
+            break;
+        case 2:
+            Reverse_Songs_Play_list(n);
+            break;
+        case 3:
+            
+            break;
+        default:
+            break;
+    }
+}
+
+//select Play list
+void select_Play_list()
+{
+    int i=1,n,m;
+    Playlist *temp=start;
+    while (temp!=NULL)
+    {
+        cout<<i<<temp->Playlist_id<<endl;
+        temp=temp->next;
+        i++;
+    }
+    if(i==1)
+    return;
+    
+    cout<<"Enter the no. of playlist you want to select \n";
+    cin>>n;
+    display_menu2();
+    cout<<"\nEnter which function you want to perform in selected linked list \n";
+    cin>>m;
+    switch(m)
+    {
+        case 1:
+            Add_songs(n);
+            break;
+        case 2:
+            
+            break;
+        case 3:
+            Reverse_Songs_Play_list(n);
+            break;
+        case 7:
+            display_songs(n);
+            break;
+        case 6:
+            delete_soong(n);
+            break;
+        case 5:
+            Play_Mode(n);
+            break;
+        default:
+            break;
+    }
+    
+}
+//display menu
+void display_menu()
+{
+    cout<<"1.Create Play_list\n"<<"2.Select Play_list  \n"<<"3.Delete Play_list \n"<<"4.Exit \n"<<"5.Display \n"<<"6.save Play_list\n"<<"7.Save All Play_list\n"<<"8.Load Play_List \n";
+}
+
+//Delete the Play_list
+void delete_Play_list()
+{
+    Playlist *temp=start;
+    string id;
+    cout<<"Enter the Play list which you wnat to delete: \n";
+    cin>>id;
+    while(temp!=NULL)
+    {
+        if(temp->Playlist_id==id)
+        {
+            if(temp->prev==NULL)
+            {
+                start=temp->next;
+                break;
+            }
+            else
+                if(temp->next==NULL)
+                {
+                    temp->next=NULL;
+                }
+            temp->prev->next=temp->next;
+            break;
+        }
+        temp=temp->next;
+    }
+    delete temp;
+}
+//fake
+void display_()
+{
+    undo *temp;
+    temp=head;
+    
+    while(temp!=NULL)
+    {
+        cout<<temp->a<<" "<<temp->play_list<<" "<<temp->n<<" "<<temp->song<<endl;
+        temp=temp->next;
+    }
+}
+//main function
+int main()
+{
+    int n;
+    while(1)
+    {
+        display_menu();
+        cin>>n;
+        switch(n)
+        {
+            case 1:
+                create_Play_list();
+                break;
+            case 2:
+                select_Play_list();
+                break;
+            case 3:
+                delete_Play_list();
+                break;
+            case 4:
+                exit(1);
+            case 5:
+                display();
+                break;
+           case 6:
+                display_();
+                break;
+            default:
+                break;
+        }
+    }
+    
+}
