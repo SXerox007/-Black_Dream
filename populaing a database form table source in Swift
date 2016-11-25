@@ -1,0 +1,45 @@
+//populaing a database form table source
+import UIKit
+
+class ViewController: UIViewController, UITableViewDataSource{
+    let people = [
+    ("sumit thakur"," Shimla"),
+        ("Raghav sharma","palampur"),
+        ("Lakshay madaan","Delhi")
+    ]
+    let videos = [
+    ("C++","Rangra"),
+        ("C","Rangra"),
+        ("Java","ourself"),
+        ("HTML","chetan"),
+        ("microprocessor","sandhya")
+    
+    ]
+    
+    
+
+    
+    //return int how many section in there
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1;
+    }
+//return int How many rows below
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return people.count;//it will count the no. of the rows in people we can use videos in stead of people
+    }
+//what are the contents of the table
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = UITableViewCell()
+var( personName,personLocation) = people[indexPath.row]//it will tell us index path first of all zero thn 1,2 and then 3
+        cell.textLabel?.text = personName//it will tell us the we returning the no value
+        return cell
+        
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+    }
+
+
+
+}
